@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>학습 목록</title>
+</head>
+<body>
+  <h1>학습 목록</h1>
+  <p>{{ username }}</p>
+  {% for item in studies %}
+    <div>{{ item.title if item.title else item.content }}</div>
+  {% endfor %}
+</body>
+</html>

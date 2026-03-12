@@ -13,7 +13,7 @@ def todos_list():
     """To-Do 목록을 표시하고 필터링 옵션을 제공합니다."""
     if 'loggedin' not in session:
         flash('To-Do List를 보려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     status_filter = request.args.get('status', 'all').strip()
     search_query = request.args.get('query', '').strip()
@@ -52,7 +52,7 @@ def add_todo():
     """새 To-Do 항목을 추가합니다."""
     if 'loggedin' not in session:
         flash('To-Do 항목을 추가하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     task = request.form['task'].strip()
     due_date_str = request.form.get('due_date', '').strip()
@@ -94,7 +94,7 @@ def update_todo_status(todo_id, new_status):
     """To-Do 항목의 상태를 업데이트합니다."""
     if 'loggedin' not in session:
         flash('To-Do 항목 상태를 변경하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     if new_status not in VALID_STATUSES:
         flash('유효하지 않은 To-Do 상태입니다.', 'error')
@@ -128,7 +128,7 @@ def delete_todo(todo_id):
     """To-Do 항목을 삭제합니다."""
     if 'loggedin' not in session:
         flash('To-Do 항목을 삭제하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     try:
@@ -156,7 +156,7 @@ def reschedule_todo_calendar(todo_id, year=None, month=None):
     """특정 To-Do 항목의 마감일을 재조정하기 위한 달력을 표시합니다."""
     if 'loggedin' not in session:
         flash('To-Do 항목 마감일을 재조정하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     todo_item = None
@@ -213,7 +213,7 @@ def set_new_due_date(todo_id):
     """선택된 날짜로 To-Do 항목의 마감일을 설정합니다."""
     if 'loggedin' not in session:
         flash('To-Do 항목 마감일을 설정하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     new_due_date_str = request.form.get('new_due_date', '').strip()
     if not new_due_date_str:

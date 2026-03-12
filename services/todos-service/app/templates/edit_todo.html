@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>할 일 수정</title>
+</head>
+<body>
+  <h1>할 일 수정</h1>
+  <form method="post">
+    <input type="text" name="title" value="{{ todo.title if todo else '' }}">
+    <textarea name="content">{{ todo.content if todo else '' }}</textarea>
+    <button type="submit">수정</button>
+  </form>
+</body>
+</html>

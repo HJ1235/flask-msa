@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>다이어리 보기</title>
+</head>
+<body>
+  <h1>{{ diary.title if diary else '다이어리' }}</h1>
+  <div>{{ diary.content if diary else '' }}</div>
+</body>
+</html>

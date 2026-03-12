@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>다이어리</title>
+</head>
+<body>
+  <h1>다이어리 목록</h1>
+  <p>{{ username }}</p>
+  {% for item in diaries %}
+    <div>{{ item.title if item.title else item.content }}</div>
+  {% endfor %}
+</body>
+</html>

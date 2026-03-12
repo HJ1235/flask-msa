@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>다이어리 수정</title>
+</head>
+<body>
+  <h1>다이어리 수정</h1>
+  <form method="post">
+    <input type="text" name="title" value="{{ diary.title if diary else '' }}">
+    <textarea name="content">{{ diary.content if diary else '' }}</textarea>
+    <button type="submit">수정</button>
+  </form>
+</body>
+</html>

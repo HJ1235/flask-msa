@@ -10,7 +10,7 @@ def study_list():
     """전체 학습 과목 목록을 표시합니다."""
     if 'loggedin' not in session:
         flash('학습 콘텐츠를 보려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     subjects = []
@@ -34,7 +34,7 @@ def subject_detail(subject_id):
     """특정 과목의 이론/실습 콘텐츠 목록을 표시합니다."""
     if 'loggedin' not in session:
         flash('학습 콘텐츠를 보려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     subject = None
@@ -79,7 +79,7 @@ def view_content(content_id):
     """개별 콘텐츠(이론 또는 실습)의 상세 내용을 표시합니다."""
     if 'loggedin' not in session:
         flash('콘텐츠를 보려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     try:

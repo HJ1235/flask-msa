@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>할 일 목록</title>
+</head>
+<body>
+  <h1>할 일 목록</h1>
+  <p>{{ username }}</p>
+  {% for item in todos %}
+    <div>{{ item.title if item.title else item.content }}</div>
+  {% endfor %}
+</body>
+</html>

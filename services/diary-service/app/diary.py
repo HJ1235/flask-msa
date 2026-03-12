@@ -12,7 +12,7 @@ def diary_calendar(year=None, month=None):
     """사용자별 월 달력을 표시하고 일기 기록 여부를 나타냅니다."""
     if 'loggedin' not in session:
         flash('일기장을 보려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     today = datetime.now()
     if year is None:
@@ -66,7 +66,7 @@ def diary_entry(date_str):
     """특정 날짜의 일기를 작성/조회/수정합니다."""
     if 'loggedin' not in session:
         flash('일기를 작성/조회하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     try:
         entry_date = datetime.strptime(date_str, '%Y-%m-%d').date()
