@@ -1,43 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>콘텐츠 추가</title>
-</head>
+<head><meta charset="UTF-8"><title>콘텐츠 추가</title></head>
 <body>
   <h1>콘텐츠 추가</h1>
   <form method="post" enctype="multipart/form-data">
-    <div>
-      <label>제목</label>
-      <input type="text" name="title">
-    </div>
-    <div>
-      <label>과목</label>
-      <select name="subject_id">
-        {% for s in subjects %}
-        <option value="{{ s.id }}">{{ s.name }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div>
-      <label>콘텐츠 타입</label>
-      <input type="text" name="content_type">
-    </div>
-    <div>
-      <label>저장 방식</label>
-      <select name="storage_type">
-        <option value="editor">editor</option>
-        <option value="pdf">pdf</option>
-      </select>
-    </div>
-    <div>
-      <label>본문</label>
-      <textarea name="body"></textarea>
-    </div>
-    <div>
-      <label>PDF 파일</label>
-      <input type="file" name="pdf_file">
-    </div>
+    <input type="text" name="title" placeholder="제목">
     <button type="submit">저장</button>
   </form>
 </body>

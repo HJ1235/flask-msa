@@ -1,31 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>콘텐츠 관리</title>
-</head>
+<head><meta charset="UTF-8"><title>콘텐츠 관리</title></head>
 <body>
   <h1>콘텐츠 관리</h1>
-  <a href="/admin/add_content">새 콘텐츠 추가</a>
-  <table border="1" cellpadding="8">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>제목</th>
-        <th>타입</th>
-        <th>과목</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in contents %}
-      <tr>
-        <td>{{ item.id }}</td>
-        <td>{{ item.title }}</td>
-        <td>{{ item.content_type }}</td>
-        <td>{{ item.subject_name }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  {% for item in contents %}
+    <div>{{ item.title }}</div>
+  {% endfor %}
 </body>
 </html>

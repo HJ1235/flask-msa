@@ -1,21 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>게시글 수정</title>
-</head>
+<head><meta charset="UTF-8"><title>게시글 수정</title></head>
 <body>
   <h1>게시글 수정</h1>
-  <p>사용자: {{ username }}</p>
   <form method="post">
-    <div>
-      <label>제목</label>
-      <input type="text" name="title" value="{{ post.title if post else '' }}">
-    </div>
-    <div>
-      <label>내용</label>
-      <textarea name="content">{{ post.content if post else '' }}</textarea>
-    </div>
+    <input type="text" name="title" value="{{ post.title if post else '' }}">
+    <textarea name="content">{{ post.content if post else '' }}</textarea>
     <button type="submit">수정</button>
   </form>
 </body>

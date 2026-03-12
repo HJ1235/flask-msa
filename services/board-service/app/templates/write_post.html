@@ -1,21 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>글쓰기</title>
-</head>
+<head><meta charset="UTF-8"><title>글쓰기</title></head>
 <body>
   <h1>글쓰기</h1>
-  <p>사용자: {{ username }}</p>
   <form method="post">
-    <div>
-      <label>제목</label>
-      <input type="text" name="title">
-    </div>
-    <div>
-      <label>내용</label>
-      <textarea name="content"></textarea>
-    </div>
+    <input type="text" name="title" placeholder="제목">
+    <textarea name="content"></textarea>
     <button type="submit">등록</button>
   </form>
 </body>
