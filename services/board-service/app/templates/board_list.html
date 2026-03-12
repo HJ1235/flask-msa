@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>게시판 목록</title>
+</head>
+<body>
+  <h1>게시판</h1>
+  <p>사용자: {{ username }}</p>
+
+  <form method="get" action="/board/">
+    <input type="text" name="query" value="{{ search_query }}">
+    <button type="submit">검색</button>
+  </form>
+
+  <p><a href="/board/write">글쓰기</a></p>
+
+  <ul>
+    {% for post in posts %}
+    <li>
+      <a href="/board/view/{{ post.id }}">{{ post.title }}</a>
+      - {{ post.username }}
+    </li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

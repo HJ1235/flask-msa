@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>콘텐츠 수정</title>
+</head>
+<body>
+  <h1>콘텐츠 수정</h1>
+  <form method="post" enctype="multipart/form-data">
+    <div>
+      <label>제목</label>
+      <input type="text" name="title" value="{{ content.title if content else '' }}">
+    </div>
+    <div>
+      <label>과목</label>
+      <select name="subject_id">
+        {% for s in subjects %}
+        <option value="{{ s.id }}" {% if content and content.subject_id == s.id %}selected{% endif %}>{{ s.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label>콘텐츠 타입</label>
+      <input type="text" name="content_type" value="{{ content.content_type if content else '' }}">
+    </div>
+    <div>
+      <label>본문</label>
+      <textarea name="body">{{ content.body if content and content.body else '' }}</textarea>
+    </div>
+    <div>
+      <label>PDF 파일</label>
+      <input type="file" name="pdf_file">
+    </div>
+    <button type="submit">수정</button>
+  </form>
+</body>
+</html>

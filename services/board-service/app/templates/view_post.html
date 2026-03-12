@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 보기</title>
+</head>
+<body>
+  <h1>{{ post.title if post else '게시글' }}</h1>
+  <p>작성자: {{ post.username if post else '' }}</p>
+  <div>{{ post.content if post else '' }}</div>
+
+  <h2>댓글</h2>
+  <ul>
+    {% for comment in comments %}
+    <li>{{ comment.username }}: {{ comment.content }}</li>
+    {% endfor %}
+  </ul>
+
+  <form method="post" action="/board/comment/add/{{ post.id }}">
+    <textarea name="content"></textarea>
+    <button type="submit">댓글 등록</button>
+  </form>
+</body>
+</html>
