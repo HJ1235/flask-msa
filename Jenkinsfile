@@ -42,7 +42,7 @@ pipeline {
 
               GIT_TAG=${GIT_TAG}
 
-              echo '${DOCKER_PASS}' | docker login -u '${DOCKER_USER}' --password-stdin
+              echo '${DOCKER_PASS}' | docker login docker.io -u '${DOCKER_USER}' --password-stdin
 
               docker build --no-cache -t docker.io/${DOCKERHUB_USER}/auth-service:${GIT_TAG}   ./services/auth-service
               docker build --no-cache -t docker.io/${DOCKERHUB_USER}/board-service:${GIT_TAG}  ./services/board-service
