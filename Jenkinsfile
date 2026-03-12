@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   environment {
-    REMOTE_HOST = 'master.labs.local'
+    REMOTE_HOST = '10.10.8.3'
     REMOTE_USER = 'master'
     REMOTE_APP_DIR = '/home/master/flask-msa'
     DOCKERHUB_USER = 'zurang'
