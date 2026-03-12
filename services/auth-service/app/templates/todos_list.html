@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Todo 목록{% endblock %}
+
+{% block extra_css %}
+.status-badge { font-size: 0.75rem; }
+.todo-row.완료 td { opacity: 0.5; text-decoration: line-through; }
+{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-check2-square me-2 text-warning"></i>Todo 목록</h2>
+</div>
+
+<!-- Todo 추가 -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body p-4">
+        <h6 class="mb-3 fw-semibold"><i class="bi bi-plus-circle me-1"></i>새 할 일 추가</h6>
+        <form action="/todos/add" method="POST">
+            <div class="row g-2">
+                <div class="col-md-5">
+                    <input type="text" name="task" class="form-control" placeholder="할 일을 입력하세요" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="due_date" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <select name="status" class="form-select">
+                        {% for s in all_statuses %}
+                        <option value="{{ s }}">{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-warning w-100"><i class="bi bi-plus me-1"></i>추가</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 필터 + 검색 -->
+<div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+    <a href="/todos/" class="btn btn-sm {{ 'btn-secondary' if status_filter == 'all' else 'btn-outline-secondary' }}">전체</a>
+    {% for s in all_statuses %}
+    <a href="/todos/?status={{ s }}" class="btn btn-sm {{ 'btn-secondary' if status_filter == s else 'btn-outline-secondary' }}">{{ s }}</a>
+    {% endfor %}
+
+    <form action="/todos/" method="GET" class="ms-auto d-flex gap-1">
+        <input type="hidden" name="status" value="{{ status_filter }}">
+        <input type="text" name="query" class="form-control form-control-sm" placeholder="검색..." value="{{ search_query }}">
+        <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-search"></i></button>
+    </form>
+</div>
+
+<!-- Todo 목록 -->
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>할 일</th>
+                    <th width="120">마감일</th>
+                    <th width="100">상태</th>
+                    <th width="200">액션</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for todo in todos %}
+                <tr class="todo-row {{ todo.status }}">
+                    <td class="align-middle">{{ todo.task }}</td>
+                    <td class="align-middle small text-muted">
+                        {{ todo.due_date if todo.due_date else '-' }}
+                    </td>
+                    <td class="align-middle">
+                        {% set badge = {'미완료': 'secondary', '진행중': 'primary', '완료': 'success', '기간연장': 'warning'} %}
+                        <span class="badge bg-{{ badge.get(todo.status, 'secondary') }} status-badge">{{ todo.status }}</span>
+                    </td>
+                    <td class="align-middle">
+                        <div class="d-flex gap-1 flex-wrap">
+                            {% for s in all_statuses if s != todo.status %}
+                            <form action="/todos/update_status/{{ todo.id }}/{{ s }}" method="POST">
+                                <button type="submit" class="btn btn-xs btn-outline-secondary" style="font-size:0.7rem;padding:2px 6px;">
+                                    {{ s }}
+                                </button>
+                            </form>
+                            {% endfor %}
+                            <a href="/todos/reschedule/{{ todo.id }}" class="btn btn-xs btn-outline-info" style="font-size:0.7rem;padding:2px 6px;">
+                                <i class="bi bi-calendar"></i>
+                            </a>
+                            <form action="/todos/delete/{{ todo.id }}" method="POST"
+                                  onsubmit="return confirm('삭제하시겠습니까?')">
+                                <button type="submit" class="btn btn-xs btn-outline-danger" style="font-size:0.7rem;padding:2px 6px;">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-5">
+                        <i class="bi bi-inbox display-6 d-block mb-2"></i>할 일이 없습니다.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

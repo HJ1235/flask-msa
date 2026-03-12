@@ -1,0 +1,67 @@
+// auth-service 독립 파이프라인
+// services/auth-service 디렉토리 변경 시 단독 배포
+pipeline {
+    agent any
+
+    environment {
+        REGISTRY       = 'docker.io/zurang'
+        SERVICE_NAME   = 'auth-service'
+        KUBE_NAMESPACE = 'flask-app'
+        IMAGE_TAG      = "${BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps { checkout scm }
+        }
+
+        stage('Build') {
+            steps {
+                sh """
+                    docker build -t ${REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG} \
+                        -t ${REGISTRY}/${SERVICE_NAME}:v1 \
+                        services/${SERVICE_NAME}/
+                """
+            }
+        }
+
+        stage('Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'registry-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login ${REGISTRY} -u $DOCKER_USER --password-stdin
+                        docker push ${REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG}
+                        docker push ${REGISTRY}/${SERVICE_NAME}:v1
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                withKubeConfig([credentialsId: 'kubeconfig-credentials']) {
+                    sh """
+                        kubectl apply -f services/${SERVICE_NAME}/k8s/${SERVICE_NAME}.yaml
+                        kubectl set image deployment/${SERVICE_NAME} \
+                            ${SERVICE_NAME}=${REGISTRY}/${SERVICE_NAME}:${IMAGE_TAG} \
+                            -n ${KUBE_NAMESPACE}
+                        kubectl rollout status deployment/${SERVICE_NAME} \
+                            -n ${KUBE_NAMESPACE} --timeout=300s
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            withKubeConfig([credentialsId: 'kubeconfig-credentials']) {
+                sh "kubectl rollout undo deployment/${SERVICE_NAME} -n ${KUBE_NAMESPACE}"
+            }
+        }
+    }
+}

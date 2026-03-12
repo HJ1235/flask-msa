@@ -1,0 +1,198 @@
+# =============================================
+# ServiceAccounts for each microservice
+# =============================================
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: auth-service-sa
+  namespace: flask-app
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: board-service-sa
+  namespace: flask-app
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: diary-service-sa
+  namespace: flask-app
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: todos-service-sa
+  namespace: flask-app
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: study-service-sa
+  namespace: flask-app
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-service-sa
+  namespace: flask-app
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jenkins-sa
+  namespace: jenkins
+---
+# =============================================
+# Role: 일반 서비스용 (ConfigMap, Secret 읽기만)
+# =============================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: service-reader-role
+  namespace: flask-app
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+# Role: admin 서비스용 (추가 권한)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: admin-service-role
+  namespace: flask-app
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods", "services", "endpoints"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch"]
+---
+# =============================================
+# RoleBindings
+# =============================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: auth-service-rb
+  namespace: flask-app
+subjects:
+  - kind: ServiceAccount
+    name: auth-service-sa
+    namespace: flask-app
+roleRef:
+  kind: Role
+  name: service-reader-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: board-service-rb
+  namespace: flask-app
+subjects:
+  - kind: ServiceAccount
+    name: board-service-sa
+    namespace: flask-app
+roleRef:
+  kind: Role
+  name: service-reader-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: diary-service-rb
+  namespace: flask-app
+subjects:
+  - kind: ServiceAccount
+    name: diary-service-sa
+    namespace: flask-app
+roleRef:
+  kind: Role
+  name: service-reader-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: todos-service-rb
+  namespace: flask-app
+subjects:
+  - kind: ServiceAccount
+    name: todos-service-sa
+    namespace: flask-app
+roleRef:
+  kind: Role
+  name: service-reader-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: study-service-rb
+  namespace: flask-app
+subjects:
+  - kind: ServiceAccount
+    name: study-service-sa
+    namespace: flask-app
+roleRef:
+  kind: Role
+  name: service-reader-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: admin-service-rb
+  namespace: flask-app
+subjects:
+  - kind: ServiceAccount
+    name: admin-service-sa
+    namespace: flask-app
+roleRef:
+  kind: Role
+  name: admin-service-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# =============================================
+# ClusterRole + ClusterRoleBinding: Jenkins CI/CD
+# =============================================
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: jenkins-cicd-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "endpoints", "namespaces", "configmaps", "secrets", "persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets", "statefulsets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses", "networkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: jenkins-cicd-crb
+subjects:
+  - kind: ServiceAccount
+    name: jenkins-sa
+    namespace: jenkins
+roleRef:
+  kind: ClusterRole
+  name: jenkins-cicd-role
+  apiGroup: rbac.authorization.k8s.io

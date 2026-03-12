@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="/board/" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>목록</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <h4 class="mb-1">{{ post.title }}</h4>
+        <small class="text-muted">
+            <i class="bi bi-person me-1"></i>{{ post.username }} &nbsp;|&nbsp;
+            <i class="bi bi-clock me-1"></i>{{ post.created_at.strftime('%Y-%m-%d %H:%M') if post.created_at else '' }}
+            {% if post.updated_at and post.updated_at != post.created_at %}
+            &nbsp;(수정됨: {{ post.updated_at.strftime('%Y-%m-%d %H:%M') }})
+            {% endif %}
+        </small>
+    </div>
+    <div class="card-body p-4">
+        <p style="white-space: pre-wrap;">{{ post.content }}</p>
+    </div>
+    {% if post.user_id == session.get('id') %}
+    <div class="card-footer bg-white d-flex gap-2 justify-content-end">
+        <a href="/board/edit/{{ post.id }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil me-1"></i>수정</a>
+        <form action="/board/delete/{{ post.id }}" method="POST"
+              onsubmit="return confirm('정말 삭제하시겠습니까?')">
+            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>삭제</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<!-- 댓글 목록 -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-white py-3">
+        <h6 class="mb-0"><i class="bi bi-chat-dots me-2"></i>댓글 {{ comments|length }}개</h6>
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for comment in comments %}
+        <li class="list-group-item py-3">
+            <div class="d-flex justify-content-between">
+                <strong><i class="bi bi-person-circle me-1 text-muted"></i>{{ comment.username }}</strong>
+                <small class="text-muted">{{ comment.created_at.strftime('%Y-%m-%d %H:%M') if comment.created_at else '' }}</small>
+            </div>
+            <p class="mt-1 mb-0" style="white-space: pre-wrap;">{{ comment.content }}</p>
+        </li>
+        {% else %}
+        <li class="list-group-item text-center text-muted py-4">
+            <i class="bi bi-chat me-1"></i>첫 댓글을 작성해보세요!
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- 댓글 작성 -->
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <h6 class="mb-3"><i class="bi bi-chat-right-text me-2"></i>댓글 작성</h6>
+        <form action="/board/comment/add/{{ post.id }}" method="POST">
+            <div class="mb-3">
+                <textarea name="content" class="form-control" rows="3"
+                          placeholder="댓글을 입력하세요" required></textarea>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-send me-1"></i>등록</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

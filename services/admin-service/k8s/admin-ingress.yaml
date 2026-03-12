@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: admin-service-ingress
+  namespace: flask-app
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: admin.labs.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: admin-service
+                port:
+                  number: 5005

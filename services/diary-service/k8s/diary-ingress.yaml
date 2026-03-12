@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: diary-service-ingress
+  namespace: flask-app
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: diary.labs.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: diary-service
+                port:
+                  number: 5002

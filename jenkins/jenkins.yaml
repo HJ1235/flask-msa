@@ -1,0 +1,224 @@
+# =============================================
+# Jenkins Deployment
+# Node Affinity: 'role=cicd' 노드에 배치
+# PVC: jenkins-pvc
+# =============================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: jenkins
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      serviceAccountName: jenkins-sa
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - cicd
+              - matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - app
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: role
+                    operator: In
+                    values:
+                      - cicd
+      containers:
+        - name: jenkins
+          image: jenkins/jenkins:lts
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 50000
+              name: jnlp
+          env:
+            - name: JAVA_OPTS
+              value: "-Djenkins.install.runSetupWizard=false -Xmx1g"
+          volumeMounts:
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+            - name: docker-sock
+              mountPath: /var/run/docker.sock  # Docker in Docker (DinD)
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1500m"
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            failureThreshold: 5
+      volumes:
+        - name: jenkins-home
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+---
+# =============================================
+# Jenkins Service (NodePort - 외부 접근용)
+# =============================================
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+  namespace: jenkins
+  labels:
+    app: jenkins
+spec:
+  type: NodePort
+  selector:
+    app: jenkins
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080   # 외부 접근 포트 (30000~32767)
+    - name: jnlp
+      protocol: TCP
+      port: 50000
+      targetPort: 50000
+      nodePort: 30050
+---
+# =============================================
+# Jenkins Pipeline ConfigMap (Jenkinsfile 참고용)
+# 실제 Jenkinsfile은 Git 레포지토리에 위치
+# =============================================
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-pipeline-config
+  namespace: jenkins
+data:
+  Jenkinsfile: |
+    pipeline {
+      agent any
+      environment {
+        REGISTRY = 'docker.io/zurang'
+        KUBE_NAMESPACE = 'flask-app'
+        GIT_REPO = 'https://github.com/your-org/flask-app.git'
+      }
+      stages {
+        stage('Checkout') {
+          steps {
+            git branch: 'main', url: "${GIT_REPO}"
+          }
+        }
+        stage('Build Images') {
+          parallel {
+            stage('auth-service') {
+              steps {
+                sh 'docker build -t ${REGISTRY}/auth-service:${BUILD_NUMBER} -f services/auth/Dockerfile .'
+              }
+            }
+            stage('board-service') {
+              steps {
+                sh 'docker build -t ${REGISTRY}/board-service:${BUILD_NUMBER} -f services/board/Dockerfile .'
+              }
+            }
+            stage('diary-service') {
+              steps {
+                sh 'docker build -t ${REGISTRY}/diary-service:${BUILD_NUMBER} -f services/diary/Dockerfile .'
+              }
+            }
+            stage('todos-service') {
+              steps {
+                sh 'docker build -t ${REGISTRY}/todos-service:${BUILD_NUMBER} -f services/todos/Dockerfile .'
+              }
+            }
+            stage('study-service') {
+              steps {
+                sh 'docker build -t ${REGISTRY}/study-service:${BUILD_NUMBER} -f services/study/Dockerfile .'
+              }
+            }
+            stage('admin-service') {
+              steps {
+                sh 'docker build -t ${REGISTRY}/admin-service:${BUILD_NUMBER} -f services/admin/Dockerfile .'
+              }
+            }
+          }
+        }
+        stage('Push Images') {
+          steps {
+            withCredentials([usernamePassword(credentialsId: 'registry-credentials',
+                             usernameVariable: 'DOCKER_USER',
+                             passwordVariable: 'DOCKER_PASS')]) {
+              sh 'echo $DOCKER_PASS | docker login ${REGISTRY} -u $DOCKER_USER --password-stdin'
+              sh '''
+                for svc in auth-service board-service diary-service todos-service study-service admin-service; do
+                  docker push ${REGISTRY}/${svc}:${BUILD_NUMBER}
+                  docker tag ${REGISTRY}/${svc}:${BUILD_NUMBER} ${REGISTRY}/${svc}:v1
+                  docker push ${REGISTRY}/${svc}:v1
+                done
+              '''
+            }
+          }
+        }
+        stage('Deploy to Kubernetes') {
+          steps {
+            withKubeConfig([credentialsId: 'kubeconfig-credentials']) {
+              sh '''
+                for svc in auth-service board-service diary-service todos-service study-service admin-service; do
+                  kubectl set image deployment/${svc} ${svc}=${REGISTRY}/${svc}:${BUILD_NUMBER} \
+                    -n ${KUBE_NAMESPACE}
+                  kubectl rollout status deployment/${svc} -n ${KUBE_NAMESPACE} --timeout=300s
+                done
+              '''
+            }
+          }
+        }
+      }
+      post {
+        failure {
+          echo 'Deployment failed! Rolling back...'
+          withKubeConfig([credentialsId: 'kubeconfig-credentials']) {
+            sh '''
+              for svc in auth-service board-service diary-service todos-service study-service admin-service; do
+                kubectl rollout undo deployment/${svc} -n ${KUBE_NAMESPACE}
+              done
+            '''
+          }
+        }
+        success {
+          echo 'Deployment succeeded!'
+        }
+      }
+    }

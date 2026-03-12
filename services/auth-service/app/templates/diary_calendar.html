@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}일기장 - {{ year }}년 {{ month }}월{% endblock %}
+
+{% block extra_css %}
+.calendar-day { min-height: 70px; cursor: pointer; border-radius: 8px; transition: background .2s; }
+.calendar-day:hover { background: #e9ecef; }
+.calendar-day.has-diary { background: #d1e7dd; }
+.calendar-day.has-diary:hover { background: #badbcc; }
+.calendar-day.today { border: 2px solid #0d6efd !important; }
+.calendar-day.other-month { opacity: 0.3; pointer-events: none; }
+.day-num { font-size: 0.85rem; font-weight: 600; }
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-journal-text me-2 text-success"></i>일기장</h2>
+    <div class="d-flex align-items-center gap-3">
+        <a href="/diary/{{ prev_year }}/{{ prev_month }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        <span class="fw-bold fs-5">{{ year }}년 {{ month }}월</span>
+        <a href="/diary/{{ next_year }}/{{ next_month }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <!-- 요일 헤더 -->
+        <div class="row text-center mb-2">
+            {% for day in ['일','월','화','수','목','금','토'] %}
+            <div class="col fw-semibold {{ 'text-danger' if loop.index0 == 0 else ('text-primary' if loop.index0 == 6 else 'text-muted') }}">
+                {{ day }}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 날짜 그리드 -->
+        {% for week in month_days %}
+        <div class="row mb-2">
+            {% for day in week %}
+            {% if day == 0 %}
+            <div class="col"><div class="calendar-day other-month p-2"></div></div>
+            {% else %}
+                {% set date_str = '%04d-%02d-%02d' | format(year, month, day) %}
+                {% set has_diary = date_str in diary_dates %}
+                <div class="col">
+                    <a href="/diary/entry/{{ date_str }}" class="text-decoration-none">
+                        <div class="calendar-day border p-2
+                            {{ 'has-diary' if has_diary else '' }}
+                            {{ 'today' if current_day == day else '' }}">
+                            <div class="day-num {{ 'text-danger' if loop.index0 == 0 else ('text-primary' if loop.index0 == 6 else '') }}">
+                                {{ day }}
+                            </div>
+                            {% if has_diary %}
+                            <div class="text-center mt-1">
+                                <i class="bi bi-journal-check text-success small"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mt-3 d-flex gap-3 small text-muted">
+    <span><span class="badge bg-success-subtle text-success border">●</span> 일기 작성됨</span>
+    <span><span class="badge bg-white border border-primary text-primary">●</span> 오늘</span>
+</div>
+{% endblock %}

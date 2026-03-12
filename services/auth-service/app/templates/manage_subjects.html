@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}과목 관리{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-folder-fill me-2 text-danger"></i>과목 관리</h2>
+    <a href="/admin/" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>대시보드</a>
+</div>
+
+<!-- 과목 추가 -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body p-4">
+        <h6 class="mb-3 fw-semibold"><i class="bi bi-plus-circle me-1"></i>새 과목 추가</h6>
+        <form action="/admin/subjects" method="POST" class="d-flex gap-2">
+            <input type="text" name="name" class="form-control" placeholder="과목 이름 입력" required>
+            <button type="submit" class="btn btn-danger px-4">추가</button>
+        </form>
+    </div>
+</div>
+
+<!-- 과목 목록 -->
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>과목명</th>
+                    <th width="150">액션</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subject in subjects %}
+                <tr>
+                    <td class="align-middle fw-semibold">
+                        <i class="bi bi-folder me-2 text-warning"></i>{{ subject.name }}
+                    </td>
+                    <td class="align-middle">
+                        <div class="d-flex gap-1">
+                            <a href="/admin/edit_subject/{{ subject.id }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form action="/admin/delete_subject/{{ subject.id }}" method="POST"
+                                  onsubmit="return confirm('과목과 관련 콘텐츠가 모두 삭제됩니다. 계속하시겠습니까?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="2" class="text-center text-muted py-5">
+                        <i class="bi bi-inbox display-6 d-block mb-2"></i>등록된 과목이 없습니다.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

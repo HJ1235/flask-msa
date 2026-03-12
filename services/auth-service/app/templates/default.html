@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Flask App - 시작{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-10">
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold text-primary">Flask App</h1>
+            <p class="lead text-muted">로그인하거나 회원가입하여 서비스를 이용하세요.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- 로그인 -->
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-4"><i class="bi bi-box-arrow-in-right me-2 text-primary"></i>로그인</h4>
+                        <form action="/login" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">사용자 이름</label>
+                                <input type="text" name="username" class="form-control" placeholder="아이디 입력" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">비밀번호</label>
+                                <input type="password" name="password" class="form-control" placeholder="비밀번호 입력" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">로그인</button>
+                            </div>
+                            <div class="text-center mt-3">
+                                <a href="/forgot_password" class="text-decoration-none small">비밀번호를 잊으셨나요?</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 회원가입 -->
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <h4 class="card-title mb-4"><i class="bi bi-person-plus me-2 text-success"></i>회원가입</h4>
+                        <form action="/register" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">사용자 이름</label>
+                                <input type="text" name="username" class="form-control" placeholder="아이디 입력" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">휴대폰 번호</label>
+                                <input type="text" name="phone_number" class="form-control" placeholder="예: 01012345678" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">비밀번호</label>
+                                <input type="password" name="password" class="form-control" placeholder="영문대소문자+숫자+특수문자 8자 이상" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success">회원가입</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

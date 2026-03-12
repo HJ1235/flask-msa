@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}마감일 재조정{% endblock %}
+
+{% block extra_css %}
+.calendar-day { min-height: 55px; cursor: pointer; border-radius: 8px; transition: background .2s; }
+.calendar-day:hover { background: #fff3cd; }
+.calendar-day.today { border: 2px solid #0d6efd !important; }
+.calendar-day.other-month { opacity: 0.3; pointer-events: none; }
+{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="/todos/" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Todo 목록</a>
+</div>
+
+<div class="mb-4">
+    <h2><i class="bi bi-calendar-event me-2 text-warning"></i>마감일 재조정</h2>
+    <p class="text-muted">할 일: <strong>{{ todo_item.task }}</strong> &nbsp;|&nbsp; 현재 마감일: {{ todo_item.due_date or '없음' }}</p>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+        <a href="/todos/reschedule/{{ todo_item.id }}/{{ prev_year }}/{{ prev_month }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        <span class="fw-bold fs-5">{{ year }}년 {{ month }}월</span>
+        <a href="/todos/reschedule/{{ todo_item.id }}/{{ next_year }}/{{ next_month }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="row text-center mb-2">
+            {% for day in ['일','월','화','수','목','금','토'] %}
+            <div class="col fw-semibold {{ 'text-danger' if loop.index0 == 0 else ('text-primary' if loop.index0 == 6 else 'text-muted') }}">
+                {{ day }}
+            </div>
+            {% endfor %}
+        </div>
+        {% for week in month_days %}
+        <div class="row mb-2">
+            {% for day in week %}
+            {% if day == 0 %}
+            <div class="col"><div class="calendar-day other-month p-2"></div></div>
+            {% else %}
+                {% set date_str = '%04d-%02d-%02d' | format(year, month, day) %}
+                <div class="col">
+                    <form action="/todos/set_due_date/{{ todo_item.id }}" method="POST">
+                        <input type="hidden" name="new_due_date" value="{{ date_str }}">
+                        <button type="submit" class="calendar-day border p-2 w-100 bg-white text-start
+                            {{ 'today' if current_day == day else '' }}"
+                            style="font-size:0.85rem; font-weight:600;">
+                            {{ day }}
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}콘텐츠 수정{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="/admin/content" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>콘텐츠 목록</a>
+</div>
+<div class="mb-4">
+    <h2><i class="bi bi-pencil-square me-2 text-primary"></i>콘텐츠 수정</h2>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <form action="/admin/edit_content/{{ content.id }}" method="POST" enctype="multipart/form-data">
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">과목</label>
+                    <select name="subject_id" class="form-select" required>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}" {{ 'selected' if subject.id == content.subject_id }}>
+                            {{ subject.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">콘텐츠 유형</label>
+                    <select name="content_type" class="form-select" required>
+                        <option value="이론" {{ 'selected' if content.content_type == '이론' }}>이론</option>
+                        <option value="실습" {{ 'selected' if content.content_type == '실습' }}>실습</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">저장 방식</label>
+                    <select name="storage_type" class="form-select" id="storage-type-select" required>
+                        <option value="editor" {{ 'selected' if content.storage_type == 'editor' }}>에디터</option>
+                        <option value="pdf" {{ 'selected' if content.storage_type == 'pdf' }}>PDF</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold">제목</label>
+                    <input type="text" name="title" class="form-control" value="{{ content.title }}" required>
+                </div>
+            </div>
+
+            <!-- 에디터 -->
+            <div id="editor-section" class="mb-4" style="{{ 'display:none' if content.storage_type != 'editor' }}">
+                <label class="form-label fw-semibold">내용</label>
+                <div id="summernote">{{ content.body | safe if content.body else '' }}</div>
+                <input type="hidden" name="body" id="body-input">
+            </div>
+
+            <!-- PDF -->
+            <div id="pdf-section" class="mb-4" style="{{ 'display:none' if content.storage_type != 'pdf' }}">
+                <label class="form-label fw-semibold">PDF 파일 (새 파일만 업로드 시 변경)</label>
+                {% if content.pdf_path %}
+                <div class="mb-2">
+                    <a href="/static/{{ content.pdf_path }}" target="_blank" class="btn btn-sm btn-outline-info">
+                        <i class="bi bi-file-pdf me-1"></i>현재 PDF 보기
+                    </a>
+                </div>
+                {% endif %}
+                <input type="file" name="pdf_file" class="form-control" accept=".pdf">
+                <div class="form-text">파일을 선택하지 않으면 기존 PDF가 유지됩니다.</div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+                <a href="/admin/content" class="btn btn-secondary">취소</a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i>수정 완료</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/lang/summernote-ko-KR.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#summernote').summernote({
+        lang: 'ko-KR',
+        height: 350,
+        callbacks: {
+            onImageUpload: function(files) {
+                for (let i = 0; i < files.length; i++) {
+                    const formData = new FormData();
+                    formData.append('file', files[i]);
+                    $.ajax({
+                        url: '/admin/upload_image',
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            $('#summernote').summernote('insertImage', data.url);
+                        }
+                    });
+                }
+            }
+        }
+    });
+
+    $('#storage-type-select').on('change', function() {
+        const val = $(this).val();
+        $('#editor-section').toggle(val === 'editor');
+        $('#pdf-section').toggle(val === 'pdf');
+    });
+
+    $('form').on('submit', function() {
+        $('#body-input').val($('#summernote').summernote('code'));
+    });
+});
+</script>
+{% endblock %}

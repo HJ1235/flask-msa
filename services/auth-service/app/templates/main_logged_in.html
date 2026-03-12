@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}홈 - Flask App{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-house-fill me-2 text-primary"></i>안녕하세요, <strong>{{ session.get('username') }}</strong>님!</h2>
+    <p class="text-muted">오늘도 좋은 하루 되세요.</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <a href="/board/" class="text-decoration-none">
+            <div class="card shadow-sm h-100 border-0" style="border-left: 4px solid #0d6efd !important;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-card-text display-5 text-primary me-3"></i>
+                        <div>
+                            <h5 class="card-title mb-1">게시판</h5>
+                            <p class="card-text text-muted small">자유롭게 글을 작성하고 소통하세요</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="/diary/" class="text-decoration-none">
+            <div class="card shadow-sm h-100 border-0" style="border-left: 4px solid #198754 !important;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-journal-text display-5 text-success me-3"></i>
+                        <div>
+                            <h5 class="card-title mb-1">일기장</h5>
+                            <p class="card-text text-muted small">오늘의 일기를 기록하세요</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="/todos/" class="text-decoration-none">
+            <div class="card shadow-sm h-100 border-0" style="border-left: 4px solid #fd7e14 !important;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check2-square display-5 text-warning me-3"></i>
+                        <div>
+                            <h5 class="card-title mb-1">Todo</h5>
+                            <p class="card-text text-muted small">할 일을 관리하고 완료하세요</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="/study/" class="text-decoration-none">
+            <div class="card shadow-sm h-100 border-0" style="border-left: 4px solid #6f42c1 !important;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-book display-5 text-purple me-3" style="color:#6f42c1"></i>
+                        <div>
+                            <h5 class="card-title mb-1">학습</h5>
+                            <p class="card-text text-muted small">학습 콘텐츠를 확인하세요</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% if session.get('username') in ['kevin', 'kwangjin'] %}
+    <div class="col-md-4">
+        <a href="/admin/" class="text-decoration-none">
+            <div class="card shadow-sm h-100 border-0" style="border-left: 4px solid #dc3545 !important;">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-gear display-5 text-danger me-3"></i>
+                        <div>
+                            <h5 class="card-title mb-1">관리자</h5>
+                            <p class="card-text text-muted small">콘텐츠 및 과목을 관리하세요</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

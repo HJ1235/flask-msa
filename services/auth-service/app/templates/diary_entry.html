@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}{{ date_str }} 일기{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="/diary/" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>달력으로</a>
+</div>
+
+<div class="mb-4">
+    <h2><i class="bi bi-journal-pen me-2 text-success"></i>{{ date_str }} 일기</h2>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <form action="/diary/entry/{{ date_str }}" method="POST">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">제목 (선택)</label>
+                <input type="text" name="title" class="form-control"
+                       placeholder="일기 제목을 입력하세요 (선택사항)"
+                       value="{{ diary.title if diary and diary.title else '' }}">
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">내용</label>
+                <textarea name="content" class="form-control" rows="14"
+                          placeholder="오늘의 이야기를 기록해보세요..."
+                          required>{{ diary.content if diary else '' }}</textarea>
+            </div>
+            <div class="d-flex gap-2 justify-content-end">
+                <a href="/diary/" class="btn btn-secondary">취소</a>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-{{ 'check-lg' if diary else 'plus-lg' }} me-1"></i>
+                    {{ '수정 완료' if diary else '일기 저장' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

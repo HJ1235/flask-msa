@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}{{ content.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-3 d-flex gap-2">
+    <a href="/study/{{ content.subject_id }}" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>목록
+    </a>
+    {% if session.get('username') in ['kevin', 'kwangjin'] %}
+    <a href="/admin/edit_content/{{ content.id }}" class="btn btn-sm btn-outline-primary">
+        <i class="bi bi-pencil me-1"></i>수정
+    </a>
+    <form action="/study/content/toggle_status/{{ content.id }}" method="POST">
+        <button type="submit" class="btn btn-sm {{ 'btn-success' if content.is_active else 'btn-outline-secondary' }}">
+            {{ '✓ 활성화됨' if content.is_active else '비활성 → 활성화' }}
+        </button>
+    </form>
+    {% endif %}
+</div>
+
+<div class="mb-4">
+    <span class="badge {{ 'bg-primary' if content.content_type == '이론' else 'bg-success' }} mb-2">
+        {{ content.content_type }}
+    </span>
+    <h2>{{ content.title }}</h2>
+    <p class="text-muted small">
+        <i class="bi bi-folder me-1"></i>{{ content.subject_name }} &nbsp;|&nbsp;
+        <i class="bi bi-clock me-1"></i>{{ content.created_at.strftime('%Y-%m-%d') if content.created_at else '' }}
+        {% if not content.is_active %}
+        <span class="badge bg-secondary ms-2">비활성</span>
+        {% endif %}
+    </p>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        {% if content.storage_type == 'pdf' and content.pdf_path %}
+            <div class="ratio" style="--bs-aspect-ratio: 75%;">
+                <iframe src="/static/{{ content.pdf_path }}"
+                        style="width:100%; height:100%; border:none; border-radius:4px;"
+                        title="{{ content.title }}"></iframe>
+            </div>
+            <div class="text-center mt-3">
+                <a href="/static/{{ content.pdf_path }}" class="btn btn-outline-primary" target="_blank">
+                    <i class="bi bi-download me-1"></i>PDF 다운로드
+                </a>
+            </div>
+        {% else %}
+            <div class="content-body">{{ content.body | safe }}</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+.content-body img { max-width: 100%; height: auto; border-radius: 4px; }
+.content-body pre { background: #f8f9fa; padding: 1rem; border-radius: 4px; overflow-x: auto; }
+.content-body table { width: 100%; border-collapse: collapse; }
+.content-body table th, .content-body table td { border: 1px solid #dee2e6; padding: 0.5rem; }
+{% endblock %}

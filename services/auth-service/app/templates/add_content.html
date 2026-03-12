@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}콘텐츠 등록{% endblock %}
+
+{% block extra_css %}
+#editor-section, #pdf-section { display: none; }
+{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="/admin/content" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>콘텐츠 목록</a>
+</div>
+<div class="mb-4">
+    <h2><i class="bi bi-plus-circle me-2 text-success"></i>콘텐츠 등록</h2>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <form action="/admin/add_content" method="POST" enctype="multipart/form-data">
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">과목 <span class="text-danger">*</span></label>
+                    <select name="subject_id" class="form-select" required>
+                        <option value="">-- 과목 선택 --</option>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}">{{ subject.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">콘텐츠 유형 <span class="text-danger">*</span></label>
+                    <select name="content_type" class="form-select" required>
+                        <option value="">-- 선택 --</option>
+                        <option value="이론">이론</option>
+                        <option value="실습">실습</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">저장 방식 <span class="text-danger">*</span></label>
+                    <select name="storage_type" class="form-select" id="storage-type-select" required>
+                        <option value="">-- 선택 --</option>
+                        <option value="editor">에디터 (직접 작성)</option>
+                        <option value="pdf">PDF 파일 업로드</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label class="form-label fw-semibold">제목 <span class="text-danger">*</span></label>
+                    <input type="text" name="title" class="form-control" placeholder="콘텐츠 제목 입력" required>
+                </div>
+            </div>
+
+            <!-- 에디터 영역 -->
+            <div id="editor-section" class="mb-4">
+                <label class="form-label fw-semibold">내용 (에디터)</label>
+                <div id="summernote"></div>
+                <input type="hidden" name="body" id="body-input">
+            </div>
+
+            <!-- PDF 업로드 영역 -->
+            <div id="pdf-section" class="mb-4">
+                <label class="form-label fw-semibold">PDF 파일 <span class="text-danger">*</span></label>
+                <input type="file" name="pdf_file" class="form-control" accept=".pdf">
+                <div class="form-text">PDF 파일만 업로드 가능합니다. (최대 100MB)</div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+                <a href="/admin/content" class="btn btn-secondary">취소</a>
+                <button type="submit" class="btn btn-success" id="submit-btn">
+                    <i class="bi bi-check-lg me-1"></i>등록
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Summernote -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/lang/summernote-ko-KR.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#summernote').summernote({
+        lang: 'ko-KR',
+        height: 350,
+        callbacks: {
+            onImageUpload: function(files) {
+                for (let i = 0; i < files.length; i++) {
+                    const formData = new FormData();
+                    formData.append('file', files[i]);
+                    $.ajax({
+                        url: '/admin/upload_image',
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            $('#summernote').summernote('insertImage', data.url);
+                        }
+                    });
+                }
+            }
+        }
+    });
+
+    $('#storage-type-select').on('change', function() {
+        const val = $(this).val();
+        $('#editor-section').toggle(val === 'editor');
+        $('#pdf-section').toggle(val === 'pdf');
+    });
+
+    $('form').on('submit', function() {
+        $('#body-input').val($('#summernote').summernote('code'));
+    });
+});
+</script>
+{% endblock %}

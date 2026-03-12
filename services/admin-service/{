@@ -1,0 +1,47 @@
+Script started on 2026-03-12 07:38:52+00:00 [TERM="xterm" TTY="/dev/pts/1" COLUMNS="115" LINES="56"]
+[?2004h]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ [7mdocker version[27m
+[7mkubectl version --client[27m
+[7mgit --version[27m
+[7mwhich docker[27m[A[A[A]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ docker version
+kubectl version --client
+git --version
+which docker
+[?2004lEmulate Docker CLI using podman. Create /etc/containers/nodocker to quiet msg.
+Client:       Podman Engine
+Version:      4.9.3
+API Version:  4.9.3
+Go Version:   go1.22.2
+Built:        Thu Jan  1 00:00:00 1970
+OS/Arch:      linux/amd64
+Client Version: v1.32.1
+Kustomize Version: v5.5.0
+git version 2.43.0
+/usr/bin/docker
+[?2004h]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ [7mls -l ~/.kube/config[27mls -l ~/.kube/config
+[?2004l-rw------- 1 master master 5672 Mar  9 11:33 /home/master/.kube/config
+[?2004h]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ ^C[?2004l[?2004h[?2004l
+[?2004h]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ [7mmkdir -p ~/jenkins-creds[27m
+[7mcp ~/.kube/config ~/jenkins-creds/kubeconfig-flask-msa[27m
+[7mls -l ~/jenkins-creds/kubeconfig-flask-msa[27m[A[A]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ mkdir -p ~/jenkins-creds
+cp ~/.kube/config ~/jenkins-creds/kubeconfig-flask-msa
+ls -l ~/jenkins-creds/kubeconfig-flask-msa
+[?2004l-rw------- 1 master master 5672 Mar 12 07:39 /home/master/jenkins-creds/kubeconfig-flask-msa
+[?2004h]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ [7mmkdir -p ~/jenkins-creds[27m
+[7mcp ~/.kube/config ~/jenkins-creds/kubeconfig-flask-msa[27m
+[7mls -l ~/jenkins-creds/kubeconfig-flask-msa[27m[A[A]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ mkdir -p ~/jenkins-creds
+cp ~/.kube/config ~/jenkins-creds/kubeconfig-flask-msa
+ls -l ~/jenkins-creds/kubeconfig-flask-msa
+[?2004l-rw------- 1 master master 5672 Mar 12 07:41 /home/master/jenkins-creds/kubeconfig-flask-msa
+[?2004h]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ ^C[?2004l[?2004h[?2004l
+[?2004h]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ [7mhttps://github.com/HJ1235/flask-msa[27mhttps://github.com/HJ1235/flask-msa
+[?2004lbash: https://github.com/HJ1235/flask-msa: No such file or directory
+[?2004h]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ [7mgit ls-remote https://github.com/HJ1235/flask-msa.git[27m[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cgit ls-remote https://github.com/HJ1235/flask-msa.git
+[?2004lUsername for 'https://github.com': HJ1235
+Password for 'https://HJ1235@github.com': 
+remote: Repository not found.
+fatal: repository 'https://github.com/HJ1235/flask-msa.git/' not found
+[?2004h]0;master@master: ~/flask-msa/services/admin-servicemaster@master:~/flask-msa/services/admin-service$ [7mgit ls-remote https://github.com/HJ1235/flask-msa.git[27m[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cgit ls-remote https://github.com/HJ1235/flask-msa.git
+[?2004lUsername for 'https://github.com': HJ1235
+Password for 'https://HJ1235@github.com': 
+remote: Invalid username or token. Password authentication is not supported for Git operations.
+fatal: Authentication fail
