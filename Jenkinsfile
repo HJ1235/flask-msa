@@ -68,7 +68,6 @@ pipeline {
               kubectl apply -f k8s/namespace/namespace.yaml
               kubectl apply -f k8s/configmap/configmap-secret.yaml
               kubectl apply -f k8s/rbac/rbac.yaml
-              kubectl apply -f k8s/mysql/mysql.yaml
 
               kubectl apply -f services/auth-service/k8s/auth-service.yaml
               kubectl apply -f services/board-service/k8s/board-service.yaml
