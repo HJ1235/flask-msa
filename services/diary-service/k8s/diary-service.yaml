@@ -25,7 +25,7 @@ spec:
       serviceAccountName: auth-service-sa
       containers:
         - name: diary-service
-          image: docker.io/zurang/diary-service:healthfix
+          image: docker.io/zurang/diary-service:9f228b2
           imagePullPolicy: Always
           ports:
             - containerPort: 5002

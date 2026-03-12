@@ -25,7 +25,7 @@ spec:
       serviceAccountName: auth-service-sa
       containers:
         - name: study-service
-          image: docker.io/zurang/study-service:appfix
+          image: docker.io/zurang/study-service:9f228b2
           imagePullPolicy: Always
           ports:
             - containerPort: 5004

@@ -9,7 +9,7 @@ def board_list():
     """검색 기능을 포함한 게시글 목록을 표시합니다."""
     if 'loggedin' not in session:
         flash('게시판을 보려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     search_query = request.args.get('query', '').strip()
     conn = None
@@ -41,7 +41,7 @@ def write_post():
     """새 게시글 작성을 처리합니다."""
     if 'loggedin' not in session:
         flash('게시글을 작성하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     if request.method == 'POST':
         title = request.form['title'].strip()
@@ -76,7 +76,7 @@ def view_post(post_id):
     """단일 게시글과 해당 댓글을 표시합니다."""
     if 'loggedin' not in session:
         flash('게시글을 보려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     post = None
@@ -115,7 +115,7 @@ def edit_post(post_id):
     """기존 게시글 편집을 처리합니다."""
     if 'loggedin' not in session:
         flash('게시글을 수정하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     post = None
@@ -160,7 +160,7 @@ def delete_post(post_id):
     """게시글 삭제를 처리합니다."""
     if 'loggedin' not in session:
         flash('게시글을 삭제하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     try:
@@ -192,7 +192,7 @@ def add_comment(post_id):
     """게시글에 댓글 추가를 처리합니다."""
     if 'loggedin' not in session:
         flash('댓글을 작성하려면 로그인해야 합니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     content = request.form['content'].strip()
     if not content:

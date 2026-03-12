@@ -13,7 +13,7 @@ def admin_dashboard():
     """관리자 메인 대시보드 페이지"""
     if not is_admin():
         flash('접근 권한이 없습니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
     return render_template('admin_dashboard.html', username=session['username'])
 
 
@@ -56,7 +56,7 @@ def manage_content():
     """전체 학습 콘텐츠 목록을 보여주는 관리 페이지"""
     if not is_admin():
         flash('접근 권한이 없습니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     try:
@@ -84,7 +84,7 @@ def add_content():
     """새로운 학습 콘텐츠를 등록하는 페이지"""
     if not is_admin():
         flash('접근 권한이 없습니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     from flask import current_app
     conn = None
@@ -155,7 +155,7 @@ def edit_content(content_id):
     """기존 학습 콘텐츠를 수정하는 페이지"""
     if not is_admin():
         flash('접근 권한이 없습니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     from flask import current_app
     conn = None
@@ -226,7 +226,7 @@ def delete_content(content_id):
     """특정 학습 콘텐츠를 삭제합니다."""
     if not is_admin():
         flash('접근 권한이 없습니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     try:
@@ -250,7 +250,7 @@ def manage_subjects():
     """과목 목록을 보고, 새 과목을 등록하는 페이지"""
     if not is_admin():
         flash('접근 권한이 없습니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     try:
@@ -288,7 +288,7 @@ def edit_subject(subject_id):
     """기존 과목의 이름을 수정하는 페이지"""
     if not is_admin():
         flash('접근 권한이 없습니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     try:
@@ -332,7 +332,7 @@ def delete_subject(subject_id):
     """특정 과목을 삭제하는 기능"""
     if not is_admin():
         flash('접근 권한이 없습니다.', 'error')
-        return redirect(url_for('auth.index'))
+        return redirect("http://auth-service:5000/")
 
     conn = None
     try:

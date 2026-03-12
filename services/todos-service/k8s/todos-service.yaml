@@ -25,7 +25,7 @@ spec:
       serviceAccountName: auth-service-sa
       containers:
         - name: todos-service
-          image: docker.io/zurang/todos-service:healthfix
+          image: docker.io/zurang/todos-service:9f228b2
           imagePullPolicy: Always
           ports:
             - containerPort: 5003

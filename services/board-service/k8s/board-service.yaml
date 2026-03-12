@@ -25,7 +25,7 @@ spec:
       serviceAccountName: auth-service-sa
       containers:
         - name: board-service
-          image: docker.io/zurang/board-service:healthfix
+          image: docker.io/zurang/board-service:9f228b2
           imagePullPolicy: Always
           ports:
             - containerPort: 5001

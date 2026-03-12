@@ -25,7 +25,7 @@ spec:
       serviceAccountName: auth-service-sa
       containers:
         - name: auth-service
-          image: docker.io/zurang/auth-service:health404fix
+          image: docker.io/zurang/auth-service:9f228b2
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
